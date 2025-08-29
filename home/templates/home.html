@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+        <script src="https://kit.fontawesome.com/3beaa40157.js" crossorigin="anonymous"></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width">
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" rel="stylesheet" />
+        <link href="/static/main.css" rel="stylesheet">
+
+        <title>Cookie Clicker</title>
+
+    </head>
+
+    <body>
+        <div id='counter'>
+            <h2>Cookies: </h2><h2 id='cookies'>0</h2>
+            <h4>Cookies per Second: </h4><h4 id='cps'>0</h4>
+            <input type='hidden' id='cookies_clicked' value='0'></input>
+            <input type='hidden' id='cookies_spent' value='0'></input>
+        </div>
+        <div id='multipliers'>
+        {% for multiplier in multipliers %}
+        <div class = 'upgrade' id='{{ multiplier.name }}', onclick="buyMultiplier('{{ multiplier.name }}')">
+            <input type='hidden' id='{{ multiplier.name }}multiplier' value='{{ multiplier.multiplier }}'></input>
+            <input type='hidden' id='{{ multiplier.name }}building' value='{{ multiplier.building }}'></input>
+            <input type='hidden' id='{{ multiplier.name }}bought' value='0'></input>
+            <h4>{{ multiplier.name }}</h4>
+            <p>Cost: <span id='{{ multiplier.name }}cost'>{{ multiplier.cost }}</span></p>
+        </div>
+        {% endfor %}
+        </div>
+        <div id='buildings'>
+        {% for building in buildings %}
+        <div class = 'building' id='{{ building.name }}', onclick="buyBuilding('{{ building.name }}')">
+            <input type='hidden' id='{{ building.name }}cps' value='{{ building.cps }}'></input>
+            <input type='hidden' id='{{ building.name }}bought' value='0'></input>
+            <h4>{{ building.name }}</h4>
+            <p>Cost: <span id='{{ building.name }}cost'>{{ building.cost }}</span></p>
+        </div>
+        {% endfor %}
+        </div>
+        <button id="cookie" onclick='clickCookie(click_power);'>
+            <img src='/static/images/cookie.jpg'>
+        </button>
+    </body>
+
+
+
+
+    <script>
+    
+    function updateCookies(value, cookies){
+        let old_cookies = document.getElementById('cookies');
+        let new_cookies = Math.round((cookies+value)*100)/100
+        old_cookies.textContent = new_cookies;
+        return new_cookies;
+    };
+    function updateCPS(value, cps){
+        let old_cps = document.getElementById('cps');
+        let new_cps = Math.round((cps+(value-cps))*100)/100;
+        old_cps.textContent = new_cps;
+        return new_cps;
+    };
+
+    function clickCookie(old_click_power){
+        let clicked = document.getElementById('cookies_clicked');
+        clicked.value = clicked.value+old_click_power;        
+    };
+
+
+    function countNot(building){
+        const buildings = document.getElementById('buildings');
+        const children = buildings.childNodes;
+        let count = 0;
+        for (i=0; i<children.length; i++){
+            let building_children = children[i];
+            if (building_children.classList && building_children.id != building){
+                let info = building_children.childNodes;
+                count = count + parseInt(info[3].value);
+    };
+    };
+        return count;
+    };
+
+
+
+
+
+    function count(building){
+        const buildings = document.getElementById('buildings');
+        const children = buildings.childNodes;
+        let count = 0;
+        for (i=0; i<children.length; i++){
+            let building_children = children[i];
+            if (building_children.classList && building_children.id == building){
+                let info = building_children.childNodes;
+                count = count + parseInt(info[3].value);
+    };
+    };
+        return count;
+    };
+
+
+
+    function buyBuilding(building){
+        let string = building+'cost';
+        let old_cost = parseInt(document.getElementById(string).textContent);
+        let cookies = parseInt(document.getElementById('cookies').textContent);
+        if (old_cost <= cookies){
+            document.getElementById('cookies_spent').value = document.getElementById('cookies_spent').value + old_cost;
+            const formData = new FormData();
+            formData.append('building', building);
+            const buildings_bought = document.getElementById(building+'bought');
+            const building_cost = document.getElementById(building+'cost');
+            let new_cost = 0;
+            let new_bought = 0;
+            let response = fetch('/buy', {
+            method: 'POST',
+            body: formData,
+            });
+            response.then(function(v){
+                v.json().then(function(x){
+                    building_cost.textContent = Math.round(x.cost*100)/100;
+                    buildings_bought.value = x.bought;
+
+                });
+            });
+        };
+    };
+
+
+    //function fingiesMmmm(cps){
+    //thousand (and more) fingers upgrades
+   // }
+
+
+    function buyMultiplier(multiplier){
+        let string = multiplier+'cost';
+        let old_cost = parseInt(document.getElementById(string).textContent);
+        let cookies = parseInt(document.getElementById('cookies').textContent);
+        if (old_cost <= cookies){
+            document.getElementById('cookies_spent').value = document.getElementById('cookies_spent').value + old_cost;
+            const formData = new FormData();
+            formData.append('multiplier', multiplier);
+            const multiplier_cost = document.getElementById(multiplier+'cost');
+            let new_bought = 1;
+            fetch('/buymulti', {
+            method: 'POST',
+            body: formData,
+            });
+            string = multiplier+'building';
+            let building_cps = document.getElementById((document.getElementById(string).value + 'cps'));
+            multi = document.getElementById(multiplier+'multiplier');
+            console.log(multi)
+            console.log(building_cps)
+            building_cps.value = building_cps.value * multi.value;
+            document.getElementById(multiplier).classList.toggle('bought');
+        };
+    };
+
+    const delay = (delayInms) => {
+        return new Promise(resolve => setTimeout(resolve, delayInms));
+        };
+
+    function getCPS(old_cps){
+    const buildings = document.getElementById('buildings');
+    const children = buildings.childNodes;
+    let cps = 0
+    for (i=0; i<children.length; i++){
+        let building_children = children[i];
+        if (building_children.classList){
+            let info = building_children.childNodes;
+            cps = cps + info[1].value*info[3].value;
+    };
+    };
+        let new_cps = updateCPS(cps, old_cps)
+        return Math.round(new_cps*100)/100;
+    };
+
+
+    const generateCookies = async (cookies, cps, click_power) => {
+        const active = 1;
+        let counter = 0;
+        let clicked = document.getElementById('cookies_clicked');
+        let spent = document.getElementById('cookies_spent')
+        while (active==1){
+            cps = getCPS(cps);
+            cookies = updateCookies(parseInt(clicked.value), cookies)
+            cookies = updateCookies(-1*parseInt(spent.value), cookies)
+            clicked.value = 0;
+            spent.value = 0;
+            if (counter >= 10){
+                console.log(count('cursor'))
+                counter = 0;
+                cookies = updateCookies(cps, cookies);
+                };
+            counter = counter + 1;
+            let delayres = await delay(100);
+        };
+    };
+    let cps = 0;
+    let cookies = 1000;
+    let click_power = 1;
+    generateCookies(cookies, cps, click_power);
+
+
+
+    </script>
