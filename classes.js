@@ -12,14 +12,15 @@ class Building {
 }
 class Upgrade{
     constructor(this, name, cost, building, unlock){
-        this.name = name
-        this.cost = cost
-        this.building = building
-    }
-}
+        this.name = name;
+        this.cost = cost;
+        this.building = building;
+        this.unlock = unlock;
+    };
+};
 class Multiplier extends Upgrade{
     constructor(this, name, cost, building, unlock, multiplier){
         super(name, cost, building, unlock);
         this.multiplier = multiplier;
-    }
-}
+    };
+};
