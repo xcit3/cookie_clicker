@@ -78,7 +78,11 @@
         let template = building_html
         // correct name
         template.replace("buildingName", building.name)
-        // document.getElementById('buildings').innerHTML = 
+        // correct cps
+        template.replace("buildingcps", building.cps)
+        // correct cost
+        template.replace("buildingCost", building.cost)
+        document.getElementById('buildings').innerHTML = template
     }
 
     function updateCookies(value, cookies){
@@ -221,7 +225,7 @@
     let cookies = 1000;
     let click_power = 1;
     generateCookies(cookies, cps, click_power);
-
+    displayBuilding(buildings["Cursor"])
 
 
     </script>
