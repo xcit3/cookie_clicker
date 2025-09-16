@@ -144,14 +144,10 @@
         let cookies = parseInt(document.getElementById('cookies').textContent);
         if (old_cost <= cookies){
             document.getElementById('cookies_spent').value = document.getElementById('cookies_spent').value + old_cost;
-            const formData = new FormData();
-            formData.append('building', building);
-            const buildings_bought = document.getElementById(building+'bought');
-            const building_cost = document.getElementById(building+'cost');
-            let new_cost = 0;
-            let new_bought = 0;
-            building_cost.textContent = Math.round(x.cost*100)/100;
-            buildings_bought.value = x.bought;
+            let building_object = buildings[building];
+            building_object.buy();
+            building_cost.textContent = building_object.cost;
+            buildings_bought.value = building_object.bought;
         };
     };
 
@@ -167,8 +163,6 @@
         let cookies = parseInt(document.getElementById('cookies').textContent);
         if (old_cost <= cookies){
             document.getElementById('cookies_spent').value = document.getElementById('cookies_spent').value + old_cost;
-            const formData = new FormData();
-            formData.append('multiplier', multiplier);
             const multiplier_cost = document.getElementById(multiplier+'cost');
             let new_bought = 1;
             string = multiplier+'building';
