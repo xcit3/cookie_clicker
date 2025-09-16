@@ -32,14 +32,7 @@
         {% endfor %}
         </div>
         <div id='buildings'>
-        {% for building in buildings %}
-        <div class = 'building' id='{{ building.name }}', onclick="buyBuilding('{{ building.name }}')">
-            <input type='hidden' id='{{ building.name }}cps' value='{{ building.cps }}'></input>
-            <input type='hidden' id='{{ building.name }}bought' value='0'></input>
-            <h4>{{ building.name }}</h4>
-            <p>Cost: <span id='{{ building.name }}cost'>{{ building.cost }}</span></p>
-        </div>
-        {% endfor %}
+            <!-- working on this rn charlie -->
         </div>
         <button id="cookie" onclick='clickCookie(click_power);'>
             <img src='/static/images/cookie.jpg'>
@@ -50,7 +43,15 @@
 
 
     <script>
-    
+    // buildings html template
+    const building_html = ```<div class = 'building' id='buildingName', onclick="buyBuilding('buildingName')">
+            <input type='hidden' id='buildingNamecps' value='buildingcps'></input>
+            <input type='hidden' id='buildingNamebought' value='0'></input>
+            <h4>buildingName</h4>
+            <p>Cost: <span id='buildingNamecost'>buildingCost</span></p>
+    </div>```
+
+    // define building objects
     let Cursor = new Building('Cursor', 10, 0.1)
     let Grandma = new  Building('Grandma', 100, 1)
     let Farm = new  Building('Farm', 1100, 8)
@@ -60,18 +61,26 @@
     let Temple = new  Building('Temple', 20000000, 7800)
     let Wizzer = new  Building('Wizard Tower', 330000000, 44000)
     let Shipment = new  Building('Shipment', 5100000000, 260000)
-    let buildings = [
-        Cursor,
-        Grandma,
-        Farm,
-        Mine,
-        Factory,
-        Bank,
-        Temple,
-        Wizzer,
-        Shipment
-    ]
+    // add all buildings to a list
+    let buildings = {
+        "Cursor":Cursor,
+        "Grandma":Grandma,
+        "Farm":Farm,
+        "Mine":Mine,
+        "Factory":Factory,
+        "Bank":Bank,
+        "Temple":Temple,
+        "Wizard Tower":Wizzer,
+        "Shipment":Shipment
+    }
     
+    function displayBuilding(building) {
+        let template = building_html
+        // correct name
+        template.replace("buildingName", building.name)
+        // document.getElementById('buildings').innerHTML = 
+    }
+
     function updateCookies(value, cookies){
         let old_cookies = document.getElementById('cookies');
         let new_cookies = Math.round((cookies+value)*100)/100
