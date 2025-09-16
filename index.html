@@ -8,7 +8,7 @@
         <meta name="viewport" content="initial-scale=1, width=device-width">
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css" rel="stylesheet" />
         <link href="/static/main.css" rel="stylesheet">
-
+        <script src="classes.js"></script>
         <title>Cookie Clicker</title>
 
     </head>
@@ -50,6 +50,27 @@
 
 
     <script>
+    
+    let Cursor = new Building('Cursor', 10, 0.1)
+    let Grandma = new  Building('Grandma', 100, 1)
+    let Farm = new  Building('Farm', 1100, 8)
+    let Mine = new  Building('Mine', 12000, 47)
+    let Factory = new  Building('factory', 130000, 260)
+    let Bank = new  Building('Bank', 1400000, 1400)
+    let Temple = new  Building('Temple', 20000000, 7800)
+    let Wizzer = new  Building('Wizard Tower', 330000000, 44000)
+    let Shipment = new  Building('Shipment', 5100000000, 260000)
+    let buildings = [
+        Cursor,
+        Grandma,
+        Farm,
+        Mine,
+        Factory,
+        Bank,
+        Temple,
+        Wizzer,
+        Shipment
+    ]
     
     function updateCookies(value, cookies){
         let old_cookies = document.getElementById('cookies');
