@@ -116,17 +116,9 @@
             const building_cost = document.getElementById(building+'cost');
             let new_cost = 0;
             let new_bought = 0;
-            let response = fetch('/buy', {
-            method: 'POST',
-            body: formData,
-            });
-            response.then(function(v){
-                v.json().then(function(x){
-                    building_cost.textContent = Math.round(x.cost*100)/100;
-                    buildings_bought.value = x.bought;
-
-                });
-            });
+            new_cost 
+            building_cost.textContent = Math.round(x.cost*100)/100;
+            buildings_bought.value = x.bought;
         };
     };
 
@@ -146,10 +138,6 @@
             formData.append('multiplier', multiplier);
             const multiplier_cost = document.getElementById(multiplier+'cost');
             let new_bought = 1;
-            fetch('/buymulti', {
-            method: 'POST',
-            body: formData,
-            });
             string = multiplier+'building';
             let building_cps = document.getElementById((document.getElementById(string).value + 'cps'));
             multi = document.getElementById(multiplier+'multiplier');
